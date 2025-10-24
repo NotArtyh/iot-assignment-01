@@ -1,7 +1,6 @@
 #include "core.h"
 #include "io.h"
 #include "kernel.h"
-
 #include <Arduino.h>
 
 // implementation of state logic
