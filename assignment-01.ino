@@ -1,12 +1,13 @@
-// #include <LiquidCrystal_I2C.h>
-// #include <avr/sleep.h>
-// #include <avr/power.h>
-#include <core.h>
-#include <kernel.h>
+#include "io.h"
+#include "core.h"
+#include "kernel.h"
+#include "config.h"
 
 void setup()
 {
-
+  initCore();
+  setupIO();
+  changeState(ST_INITIAL);
 }
 
 void loop()
