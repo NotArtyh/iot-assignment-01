@@ -1,4 +1,3 @@
-#include "config.h"
 #include "core.h"
 #include "io.h"
 #include "kernel.h"
