@@ -1,5 +1,6 @@
 #include "core.h"
-#include "io.h"
+#include "input.h"
+#include "output.h"
 #include "kernel.h"
 #include <Arduino.h>
 
@@ -14,7 +15,7 @@ void handleInitialState()
 {
     greenLedsOff();
     pulseLs();
-    displayMessage("Welcome to TOS! Press B1 to Start");
+    displayMessage(MSG_WELCOME);
 }
 
 void handleSleepState() {}
