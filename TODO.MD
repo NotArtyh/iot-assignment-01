@@ -15,10 +15,11 @@
 ## Easy
 
 - handle sleep mode
-- display message
 
 ## Done
 
 - thinkercad schematic
 - flowchart
 - state steps
+- display message
+- interaction between states
