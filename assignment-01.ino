@@ -1,5 +1,6 @@
 #include "core.h"
 #include "kernel.h"
+#include "setupIO.h"
 
 void setup()
 {
