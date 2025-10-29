@@ -1,7 +1,6 @@
 #include "config.h"
 #include "output.h"
 #include <Arduino.h>
-#include <LiquidCrystal_I2C.h> //non so se sia necessario per le funzioni lc
 
 // FADING LED VARIABLES
 int fadeAmount;
@@ -33,11 +32,13 @@ void displayMessage(Msg message)
     switch (message)
     {
     case MSG_WELCOME:
-        Serial.println("Welcome to TOS! Push B1 to Start") // DEBUGGING
-            lcd.setCursor(1, 0);
-        lcd.print("Welcome to TOS!");
-        lcd.setCursor(0, 1);
-        lcd.print("Push B1 to Start");
+        Serial.println("Welcome to TOS! Push B1 to Start")       // DEBUGGING
+            display.clearDisplay();                              // Pulisce lo schermo
+        display.setTextSize(2);                                  // Testo 2x
+        display.setTextColor(SH110X_WHITE);                      // Testo bianco
+        display.setCursor(20, 25);                               // Posizione del testo (x, y)
+        display.println(F("Welcome to TOS! Press B1 to Start")); // Scrive il testo
+        display.display();
         break;
     case:
         break;

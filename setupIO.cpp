@@ -1,10 +1,13 @@
 #include "config.h"
+#include "setupIO.h"
 #include <Arduino.h>
-#include <LiquidCrystal_I2C.h>
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SH110X.h>
 
-// initialize display
-
-LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 20, 4);
+// Crea oggetto display
+Adafruit_SH1106G display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // SETUP DEI LED, BUTTONS E DISPLAY (spostare tutto il setup altrove intanto lo lascio qui)
 
@@ -31,8 +34,13 @@ void setupButtons()
 
 void setupDisplay()
 {
-  lcd.init();
-  lcd.backlight();
+  display.begin(i2c_Address, true);
+  // Mostra splash screen iniziale Adafruit per 2 secondi
+  display.display();
+  delay(2000);
+
+  // Cancella tutto il buffer
+  display.clearDisplay();
 }
 
 void setupIO()
