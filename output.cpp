@@ -1,7 +1,7 @@
 #include "config.h"
 #include "output.h"
 #include <Arduino.h>
-#include <LiquidCrystal_I2C.h>
+#include <LiquidCrystal_I2C.h> //non so se sia necessario per le funzioni lc
 
 // FADING LED VARIABLES
 int fadeAmount;
