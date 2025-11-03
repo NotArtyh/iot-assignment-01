@@ -1,22 +1,11 @@
-#include "Arduino.h"
-#include "core.h"
-#include "kernel.h"
-#include "setupIO.h"
+#include "io.h"
+#include "state/fsm.h"
+#include <Arduino.h>
 
 void setup() {
-    initCore();
-    setupIO();
-    changeState(ST_INITIAL);
+    fsm_init();
+    input_init();
+    output_init();
 }
 
-void loop() {
-    // put your main code here, to run repeatedly:
-    switch (getCurrentState()) {
-    case ST_INITIAL:
-        break;
-    case ST_SLEEP:
-        break;
-    default:
-        break;
-    }
-}
+void loop() { fsm_update(); }

@@ -1,9 +1,7 @@
-#ifndef __IO__
-#define __IO__
+#ifndef IO_H
+#define IO_H
 
-void initInput();
-void initOutput();
-void fadeLed();
-void displayMessage(unit8_t ledPin);
+void input_init();
+void output_init();
 
 #endif

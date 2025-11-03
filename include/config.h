@@ -1,5 +1,5 @@
-#ifndef __CONFIG__
-#define __CONFIG__
+#ifndef CONFIG_H
+#define CONFIG_H
 
 #define NUM_GREEN_LEDS 4
 #define L1 13
