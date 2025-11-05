@@ -1,12 +1,12 @@
 #include "config.h"
 #include "input.h"
+#include "setupIO.h"
 #include <Arduino.h>
 #include <EnableInterrupt.h>
 
 // input output logic, handles display for now
 
-int greenLeds[] = {L1, L2, L3, L4};
-int inputButtons[] = {B1, B2, B3, B4};
+
 bool buttonPressed[NUM_BUTTONS] = {false, false, false, false};
 
 long lastButtonPressedTimestamps[NUM_BUTTONS];
@@ -25,7 +25,7 @@ void buttonHandler(int i)
   if (ts - lastButtonPressedTimestamps[i] > BOUNCING_TIME)
   {
     lastButtonPressedTimestamps[i] = ts;
-    int status = digitalRead(inputPins[i]);
+    int status = digitalRead(inputButtons[i]);
     if (status == HIGH && !buttonPressed[i])
     {
       buttonPressed[i] = true;
@@ -37,8 +37,8 @@ void initInput()
 {
   for (int i = 0; i < NUM_BUTTONS; i++)
   {
-    pinMode(inputPins[i], INPUT);
-    enableInterrupt(inputPins[i], buttonHandlers[i], CHANGE);
+    pinMode(inputButtons[i], INPUT);
+    enableInterrupt(inputButtons[i], buttonHandlers[i], CHANGE);
   }
 }
 

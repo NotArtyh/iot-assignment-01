@@ -1,5 +1,6 @@
 #ifndef __SETUPIO__
 #define __SETUPIO__
+#include "config.h"
 
 // Indirizzo I2C del display
 #define i2c_Address 0x3C // usa 0x3D se lo schermo rimane nero
@@ -8,6 +9,10 @@
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1 // Pin di reset (non usato normalmente)
+
+
+int greenLeds[] = {L1, L2, L3, L4};
+int inputButtons[] = {B1, B2, B3, B4};
 
 void setupGreenLeds();
 void setupLs();

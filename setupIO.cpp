@@ -6,10 +6,11 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH110X.h>
 
-// Crea oggetto display
+
 Adafruit_SH1106G display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-// SETUP DEI LED, BUTTONS E DISPLAY (spostare tutto il setup altrove intanto lo lascio qui)
+
+// SETUP DEI LED, BUTTONS E DISPLAY
 
 void setupGreenLeds()
 {
