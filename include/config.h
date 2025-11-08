@@ -10,10 +10,10 @@
 #define LS 3 // Questo è il led rosso
 
 #define NUM_BUTTONS 4
-#define B1 9
-#define B2 8
-#define B3 7
-#define B4 6
+#define BTN1 9
+#define BTN2 8
+#define BTN3 7
+#define BTN4 6
 
 #define POT A0
 

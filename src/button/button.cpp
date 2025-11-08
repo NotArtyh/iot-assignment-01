@@ -5,10 +5,10 @@
 
 #define BOUNCING_TIME 50
 
-uint8_t button[] = {B1, B2, B3, B4};
+uint8_t button[] = {BTN1, BTN2, BTN3, BTN4};
 
 bool button_pressed[NUM_BUTTONS] = {false, false, false, false};
-long button_pressed_timestamp[NUM_BUTTONS];
+unsigned long button_pressed_timestamp[NUM_BUTTONS] = {0, 0, 0, 0};
 
 // button wrapper to allow for debounce with enableInterrupt
 void button_handler(int i);
@@ -20,7 +20,7 @@ void (*button_handlers[NUM_BUTTONS])() = {button_handler0, button_handler1,
                                           button_handler2, button_handler3};
 
 void button_handler(int i) {
-    long ts = millis();
+    unsigned long ts = millis();
     if (ts - button_pressed_timestamp[i] > BOUNCING_TIME) {
         button_pressed_timestamp[i] = ts;
         int status = digitalRead(button[i]);
@@ -33,12 +33,12 @@ void button_handler(int i) {
 void button_init() {
     for (int i = 0; i < NUM_BUTTONS; i++) {
         pinMode(button[i], INPUT);
-        enableInterrupt(button[i], button_handlers[i], CHANGE);
+        enableInterrupt(button[i], button_handlers[i], RISING);
     }
 }
 
 void button_reset() {
-    long ts = millis();
+    unsigned long ts = millis();
     for (int i = 0; i < NUM_BUTTONS; i++) {
         button_pressed[i] = false;
         button_pressed_timestamp[i] = ts;
