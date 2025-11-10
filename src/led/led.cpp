@@ -30,6 +30,8 @@ void status_led_pulse() {
 
 void status_led_off() { digitalWrite(LS, LOW); }
 
+void status_led_on() { digitalWrite(LS, HIGH); }
+
 void green_led_off() {
     for (int i = 0; i < NUM_GREEN_LEDS; i++)
         digitalWrite(greenLeds[i], LOW);
@@ -40,9 +42,7 @@ void green_led_on() {
         digitalWrite(greenLeds[i], HIGH);
 }
 
-void green_led_on_index(int i) {
-    digitalWrite(greenLeds[i], HIGH);
-}
+void green_led_on_index(int i) { digitalWrite(greenLeds[i], HIGH); }
 
 int blink_counter = 0;
 void green_led_blink_sequence() {
