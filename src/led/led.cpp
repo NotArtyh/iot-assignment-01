@@ -40,6 +40,10 @@ void green_led_on() {
         digitalWrite(greenLeds[i], HIGH);
 }
 
+void green_led_on_index(int i) {
+    digitalWrite(greenLeds[i], HIGH);
+}
+
 int blink_counter = 0;
 void green_led_blink_sequence() {
     green_led_off();
