@@ -36,7 +36,7 @@ void oled_print(const char *text) {
 }
 
 void oled_print_static(const char *text) {
-    char buffer[36 + 1]; // 20 chars max + null terminator
+    char buffer[strlen(text) + 1];
     strncpy_P(buffer, text, sizeof(buffer) - 1);
     buffer[sizeof(buffer) - 1] = '\0';
     oled_print(buffer);

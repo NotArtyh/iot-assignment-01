@@ -27,6 +27,9 @@ void display_init() { lcd_init(); }
 void display_print(const char *text, uint8_t row, uint8_t col) {
     lcd_print(text, row, col);
 }
+void display_print_static(message msg) {
+    lcd_print_static(display_messages[msg]);
+};
 void display_test_print() { lcd_test_print(); }
 
 #endif
