@@ -4,8 +4,8 @@
 const char msg_initial[] PROGMEM = "Welcome to TOS!\nPress B1\nto Start";
 const char msg_sleep[] PROGMEM = "Sleep mode zZz\nPress B1 to awake";
 const char msg_setup[] PROGMEM = "Go!";
-const char msg_lose[] PROGMEM = "YOU LOST";
-const char msg_win[] PROGMEM = "YOU WON";
+const char msg_lose[] PROGMEM = "Game Over";
+const char msg_win[] PROGMEM = "GOOD!";
 
 const char *const display_messages[] PROGMEM = {msg_initial, msg_sleep,
                                                 msg_setup, msg_lose, msg_win};

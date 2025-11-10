@@ -5,8 +5,12 @@
 #include <time.h>
 
 #define MAX_SEQ_LENGHT 4
+
+#define SCORE_FACTOR 100
+
 uint8_t game_sequence[] = {1, 2, 3, 4};
 int user_sequence_index = 0;
+unsigned int game_score = 0;
 
 const char *game_get_sequence_string() {
     static char buffer[MAX_SEQ_LENGHT + 1];
@@ -30,7 +34,7 @@ void game_shuffle_sequence() {
 // give proper naming and implement
 void game_reset() {
     user_sequence_index = 0;
-    game_shuffle_sequence();
+    game_score = 0;
 }
 
 bool game_is_current_valid() {
@@ -57,3 +61,7 @@ bool game_all_match() {
     user_sequence_index = 0;
     return true;
 }
+
+int game_get_score() { return game_score; }
+
+void game_update_score() { game_score += SCORE_FACTOR; }
