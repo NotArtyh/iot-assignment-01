@@ -33,10 +33,3 @@ void lcd_test_print() {
 void lcd_print(const char *text) {
     // add support for line splitting like oled
 }
-
-void lcd_print_P(const char *text) {
-    size_t len = strlen_P(text);
-    char buffer[len + 1];
-    strcpy_P(buffer, text);
-    lcd_print(buffer);
-}

@@ -4,6 +4,5 @@
 void oled_init();
 void oled_test_print();
 void oled_print(const char *text);
-void oled_print_P(const char *text);
 
 #endif

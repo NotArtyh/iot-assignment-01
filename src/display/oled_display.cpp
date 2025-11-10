@@ -35,10 +35,3 @@ void oled_print(const char *text) {
         };
     }
 }
-
-void oled_print_P(const char *text) {
-    size_t len = strlen_P(text);
-    char buffer[len + 1];
-    strcpy_P(buffer, text);
-    oled_print(buffer);
-}
