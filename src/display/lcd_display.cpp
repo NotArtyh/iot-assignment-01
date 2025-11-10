@@ -1,6 +1,8 @@
 #include "display/lcd_display.h"
+#include "config.h"
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
+#include <string.h>
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
@@ -32,9 +34,9 @@ void lcd_print(const char *text) {
     // add support for line splitting like oled
 }
 
-void lcd_print_static(const char *text) {
-    char buffer[strlen(text) + 1];
-    strncpy_P(buffer, text, sizeof(buffer) - 1);
-    buffer[sizeof(buffer) - 1] = '\0';
+void lcd_print_P(const char *text) {
+    size_t len = strlen_P(text);
+    char buffer[len + 1];
+    strcpy_P(buffer, text);
     lcd_print(buffer);
 }

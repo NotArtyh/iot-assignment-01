@@ -1,9 +1,10 @@
 #include "display/oled_display.h"
+#include "config.h"
 #include <Arduino.h>
 #include <U8g2lib.h>
 #include <string.h>
 
-U8X8_SH1106_128X64_NONAME_HW_I2C u8x8(U8X8_PIN_NONE, A5, A4);
+U8X8_SH1106_128X64_NONAME_HW_I2C u8x8(U8X8_PIN_NONE, I2C_DATA, I2C_CLK);
 
 void oled_init() {
     u8x8.begin();
@@ -24,7 +25,7 @@ void oled_print(const char *text) {
     int j = 0;
     char buffer[size];
     buffer[0] = '\0';
-    for (size_t i = 0; i <= size; i++) {
+    for (int i = 0; i <= size; i++) {
         if (text[i] == '\n' || text[i] == '\0') {
             strncpy(buffer, text + j, i - j);
             buffer[i - j] = '\0';
@@ -35,9 +36,9 @@ void oled_print(const char *text) {
     }
 }
 
-void oled_print_static(const char *text) {
-    char buffer[strlen(text) + 1];
-    strncpy_P(buffer, text, sizeof(buffer) - 1);
-    buffer[sizeof(buffer) - 1] = '\0';
+void oled_print_P(const char *text) {
+    size_t len = strlen_P(text);
+    char buffer[len + 1];
+    strcpy_P(buffer, text);
     oled_print(buffer);
 }

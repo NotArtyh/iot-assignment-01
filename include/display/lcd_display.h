@@ -4,6 +4,6 @@
 void lcd_init();
 void lcd_test_print();
 void lcd_print(const char *text);
-void lcd_print_static(const char *text);
+void lcd_print_P(const char *text);
 
 #endif

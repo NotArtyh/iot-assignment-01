@@ -17,4 +17,7 @@
 
 #define POT A0
 
+#define I2C_DATA A4
+#define I2C_CLK A5
+
 #endif
