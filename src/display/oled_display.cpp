@@ -1,38 +1,43 @@
 #include "display/oled_display.h"
-#include <Adafruit_GFX.h>
-#include <Adafruit_SH110X.h>
 #include <Arduino.h>
-#include <SPI.h>
-#include <Wire.h>
+#include <U8g2lib.h>
+#include <string.h>
 
-#define i2c_Address 0x3c
-
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 64
-#define OLED_RESET -1
-Adafruit_SH1106G display =
-    Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+U8X8_SH1106_128X64_NONAME_HW_I2C u8x8(U8X8_PIN_NONE, A5, A4);
 
 void oled_init() {
-    delay(250);
-    display.begin(i2c_Address, true);
-    display.display();
-    delay(2000);
-    display.clearDisplay();
-
-    display.setTextSize(2);
-    display.setTextColor(SH110X_WHITE);
+    u8x8.begin();
+    u8x8.setFont(u8x8_font_chroma48medium8_r);
+    delay(100);
 }
 
 void oled_test_print() {
-    display.setCursor(0, 0);
-    display.println("Test 123");
-    display.display();
+    u8x8.setCursor(0, 0);
+    u8x8.print("Test 123");
+    u8x8.display();
 }
 
 void oled_print(const char *text) {
-    display.clearDisplay();
-    display.setCursor(0, 0);
-    display.print(text);
-    display.display();
+    u8x8.clear();
+    int size = strlen(text);
+    int y = 0;
+    int j = 0;
+    char buffer[size];
+    buffer[0] = '\0';
+    for (size_t i = 0; i <= size; i++) {
+        if (text[i] == '\n' || text[i] == '\0') {
+            strncpy(buffer, text + j, i - j);
+            buffer[i - j] = '\0';
+            u8x8.drawString(0, y, buffer);
+            y++;
+            j = i + 1;
+        };
+    }
+}
+
+void oled_print_static(const char *text) {
+    char buffer[36 + 1]; // 20 chars max + null terminator
+    strncpy_P(buffer, text, sizeof(buffer) - 1);
+    buffer[sizeof(buffer) - 1] = '\0';
+    oled_print(buffer);
 }

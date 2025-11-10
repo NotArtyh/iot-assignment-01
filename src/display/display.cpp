@@ -1,4 +1,14 @@
 #include "display/display.h"
+#include <avr/pgmspace.h>
+
+const char msg_initial[] PROGMEM = "Welcome to TOS!\nPress B1\nto Start";
+const char msg_sleep[] PROGMEM = "Sleep mode zZz\nPress B1 to awake";
+const char msg_setup[] PROGMEM = "Setting up the game";
+const char msg_lose[] PROGMEM = "YOU LOST";
+const char msg_win[] PROGMEM = "YOU WON";
+
+const char *const display_messages[] PROGMEM = {msg_initial, msg_sleep,
+                                                msg_setup, msg_lose, msg_win};
 
 #ifdef USE_OLED
 #include "display/oled_display.h"
@@ -6,6 +16,9 @@
 void display_init() { oled_init(); }
 void display_print(const char *text) { oled_print(text); }
 void display_test_print() { oled_test_print(); }
+void display_print_static(message msg) {
+    oled_print_static(display_messages[msg]);
+}
 
 #else
 #include "display/lcd_display.h"
