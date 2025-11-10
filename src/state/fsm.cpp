@@ -54,8 +54,6 @@ void fsm_init() {
 void handle_st_initial() {
     if (fsm_is_state_first_cycle()) {
         green_led_off();
-        Serial.println(freeRam());
-        // display_print("Welcome to TOS!\nPress B1 to Start");
         display_print_static(MSG_INITIAL);
     }
 
@@ -69,8 +67,6 @@ void handle_st_initial() {
 void handle_st_sleep() {
     if (fsm_is_state_first_cycle()) {
         button_reset();
-        Serial.println(freeRam());
-        // display_print("Sleep mode zZz\nPress B1 to awake");
         display_print_static(MSG_SLEEP);
     }
     status_led_off();
@@ -88,38 +84,22 @@ void handle_st_round() {
         button_reset();
         fsm_update_round_time();
         game_shuffle_sequence();
-        Serial.println(freeRam());
         display_print(game_get_sequence_string());
-        // Serial.println(game_get_sequence_string());
     }
 
+    // move to a proper place + mehtod
     for (size_t i = 0; i < 4; i++) {
         if (button_is_pressed(i)) {
             green_led_on_index(i);
         }
     }
-    // Serial.println(button_get_current_pressed());
-    // if (state_elapsed_time % 2000 == 0) {
-    //     Serial.println(game_get_user_sequence_index());
-    // }
 
-    // lose condition | elapsed time || wrong sequnce order
-    // if (state_elapsed_time > max_time_st_round ||
-    //     !game_is_validate_sequence()) {
-    //     fsm_transition_to(ST_SLEEP);
-    // }
-    // Serial.println(button_get_last_pressed());
-    // if (game_matched_sequence()) {
-    //     fsm_transition_to(ST_INITIAL);
-    // }
     if (state_elapsed_time > max_time_st_round ||
         (game_is_match_started() && !game_is_current_valid())) {
-        // Serial.println("you lost");
         fsm_transition_to(ST_LOSE);
     }
 
     if (game_is_match_started() && game_all_match()) {
-        // Serial.println("you won");
         fsm_transition_to(ST_INITIAL);
     }
 }

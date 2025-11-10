@@ -42,42 +42,10 @@ bool game_is_current_valid() {
     return false;
 }
 
-// bool game_matched_sequence() {
-//     for (int i = 0; i < MAX_SEQ_LENGHT; i++) {
-//         if (button_is_pressed(i) && button_get_last_pressed() == i) {
-//             // on button that is last pressed independt of the iteration
-//             if (game_sequence[user_sequence_index] == i) {
-//                 // still matching the sequence
-//                 user_sequence_index++;
-//                 return true;
-//             } else {
-//                 // not matching the sequence either not all button pressed or
-//                 // wrong sequence
-//                 return false;
-//             }
-//         }
-//     }
-
-//     for (size_t i = 0; i < button_get_all_pressed(); i++) {
-//         if (!game_is_current_digit_pressed()) {
-//             return false; // fail condition the button is wrong
-//         }
-//     }
-//     return false; // no button has been pressed yet
-//     if (user_sequence_index == MAX_SEQ_LENGHT) {
-//         return true; // win condition, the user sequence has same lenght and
-//     }
-// }
-
 bool game_is_match_started() {
-    // if (button_get_last_pressed() == -1) {
-    //     return false; // no input yet;
-    // }
-    // return true;
-
     if (button_get_current_pressed() == user_sequence_index &&
         user_sequence_index < MAX_SEQ_LENGHT) {
-        return false; // no input yet
+        return false;
     }
     return true;
 }
@@ -89,5 +57,3 @@ bool game_all_match() {
     user_sequence_index = 0;
     return true;
 }
-
-int game_get_user_sequence_index() { return user_sequence_index; }
