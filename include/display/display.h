@@ -12,6 +12,6 @@ enum message {
 void display_init();
 void display_print(const char *text);
 void display_test_print();
-void display_print_P(message msg);
+void display_print_P(message msg, ...);
 
 #endif

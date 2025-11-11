@@ -127,7 +127,7 @@ void handle_st_round() {
 void handle_st_lose() {
     if (fsm_is_state_first_cycle()) {
         green_led_off();
-        display_print_P(MSG_LOSE);
+        display_print_P(MSG_LOSE, game_get_score());
     }
 
     if (state_elapsed_time < 2000) {
@@ -145,11 +145,7 @@ void handle_st_win() {
     if (fsm_is_state_first_cycle()) {
         green_led_off();
         game_update_score();
-        display_print_P(MSG_WIN);
-        delay(1000);
-        char str_score[24];
-        sprintf(str_score, "Score: %d", game_get_score());
-        display_print(str_score);
+        display_print_P(MSG_WIN, game_get_score());
         fsm_update_round_time();
     }
 
