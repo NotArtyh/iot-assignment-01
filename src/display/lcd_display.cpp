@@ -31,5 +31,20 @@ void lcd_test_print() {
 // }
 
 void lcd_print(const char *text) {
-    // add support for line splitting like oled
+    lcd.clear();
+    int size = strlen(text);
+    int y = 0;
+    int j = 0;
+    char buffer[size];
+    buffer[0] = '\0';
+    for (int i = 0; i <= size; i++) {
+        if (text[i] == '\n' || text[i] == '\0') {
+            strncpy(buffer, text + j, i - j);
+            buffer[i - j] = '\0';
+            lcd.setCursor(0, y);
+            lcd.print(buffer);
+            y++;
+            j = i + 1;
+        };
+    }
 }
