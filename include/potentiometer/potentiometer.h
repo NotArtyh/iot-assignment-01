@@ -1,8 +1,8 @@
 #ifndef POTENTIOMETER_H
 #define POTENTIOMETER_H
 
-void potentiometer_init();
-void update_difficulty();
-int read_difficulty();
+void pot_init();
+void pot_update_factor();
+int pot_get_factor();
 
 #endif

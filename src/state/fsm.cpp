@@ -3,11 +3,12 @@
 #include "display/display.h"
 #include "game/game.h"
 #include "led/led.h"
+#include "potentiometer/potentiometer.h"
 #include <Arduino.h>
 
 #define MAX_TIME_ST_INITAL 10000
 #define MAX_TIME_ST_SLEEP 5000
-#define MAX_TIME_ST_SETUP 2000
+#define MAX_TIME_ST_SETUP 10000
 #define MAX_TIME_ST_LOSE 10000
 #define MAX_TIME_ST_WIN 5000
 #define MAX_TIME_ST_ROUND 30000
@@ -19,6 +20,7 @@ state_t state_current = ST_INITIAL;
 bool state_first_cycle = true;
 long state_entry_time;
 long state_elapsed_time;
+static int difficulty;
 
 bool fsm_is_state_first_cycle() {
     bool com = state_first_cycle;
@@ -36,8 +38,13 @@ void fsm_update_state_time() {
     state_elapsed_time = millis() - state_entry_time;
 }
 
-void fsm_update_round_time() { time_st_round -= ST_ROUND_STEP; }
+void fsm_update_round_time() { time_st_round -= ST_ROUND_STEP * difficulty; }
 void fsm_reset_round_time() { time_st_round = MAX_TIME_ST_ROUND; }
+
+void fsm_update_difficulty() {
+    pot_update_factor();
+    difficulty = pot_get_factor();
+};
 
 int freeRam() {
     extern int __heap_start, *__brkval;
@@ -68,7 +75,7 @@ void handle_st_initial() {
         fsm_transition_to(ST_SLEEP);
     }
 
-    if (button_is_pressed(1)) {
+    if (button_is_pressed(0)) {
         fsm_transition_to(ST_SETUP);
     }
 }
@@ -76,12 +83,12 @@ void handle_st_initial() {
 void handle_st_sleep() {
     if (fsm_is_state_first_cycle()) {
         button_reset();
+        status_led_off();
         display_print_P(MSG_SLEEP);
     }
-    status_led_off();
     green_led_blink_sequence();
 
-    if (button_is_pressed(1)) {
+    if (button_is_pressed(0)) {
         fsm_transition_to(ST_INITIAL);
     }
 }
@@ -95,6 +102,12 @@ void handle_st_setup() {
         display_print_P(MSG_SETUP);
     }
 
+    // move to a proper place + mehtod
+    fsm_update_difficulty();
+    green_led_off();
+    green_led_on_index(difficulty - 1);
+    // Serial.println(difficulty);
+
     if (state_elapsed_time > MAX_TIME_ST_SETUP) {
         fsm_transition_to(ST_ROUND);
     };
@@ -102,9 +115,11 @@ void handle_st_setup() {
 
 void handle_st_round() {
     if (fsm_is_state_first_cycle()) {
+        green_led_off();
         button_reset();
         game_shuffle_sequence();
         display_print(game_get_sequence_string());
+        Serial.println(time_st_round);
     }
 
     // move to a proper place + mehtod
