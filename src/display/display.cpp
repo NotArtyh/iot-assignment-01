@@ -4,7 +4,7 @@
 
 const char msg_initial[] PROGMEM = "Welcome to TOS!\nPress B1\nto Start";
 const char msg_sleep[] PROGMEM = "Sleep mode zZz\nPress B1\nto awake";
-const char msg_setup[] PROGMEM = "Go!";
+const char msg_setup[] PROGMEM = "Go!\nTurn pot for\ndifficulty";
 const char msg_lose[] PROGMEM = "Game Over\nScore: %d";
 const char msg_win[] PROGMEM = "GOOD!\nScore: %d";
 
@@ -31,9 +31,7 @@ void display_test_print() { oled_test_print(); }
 #include "display/lcd_display.h"
 
 void display_init() { lcd_init(); }
-void display_print(const char *text, uint8_t row, uint8_t col) {
-    lcd_print(text, row, col);
-}
+void display_print(const char *text) { lcd_print(text); }
 void display_test_print() { lcd_test_print(); }
 
 #endif

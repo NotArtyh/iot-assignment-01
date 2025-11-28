@@ -16,20 +16,6 @@ void lcd_test_print() {
     lcd.print("Test 123");
 }
 
-// void displayMessage(Msg message) {
-//     switch (message) {
-//     case MSG_WELCOME:
-//         Serial.println("Welcome to TOS! Push B1 to Start"); // DEBUGGING
-//         lcd.setCursor(1, 0);
-//         lcd.print("Welcome to TOS!");
-//         lcd.setCursor(0, 1);
-//         lcd.print("Push B1 to Start");
-//         break;
-//     default:
-//         break;
-//     }
-// }
-
 void lcd_print(const char *text) {
     lcd.clear();
     int size = strlen(text);
