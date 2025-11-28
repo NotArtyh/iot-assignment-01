@@ -1,5 +1,13 @@
 # Assignment #01 - Turn on the Sequence! (TOS)
+# IoT Embedded Systems Year: 2025/2026
 
+## Authors
+
+    - Muller Arthur Istvan
+        Matricola: 0001145303
+    - Cattolico Giuseppe
+        Matricola: 0001124318
+        
 ![circuit-diagram](./circuit-diagram.png)
 
 ## Setup and Build
