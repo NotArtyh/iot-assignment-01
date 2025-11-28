@@ -4,7 +4,7 @@ Course: IoT Embedded Systems
 Year: 2025/2026
 Title: assignment-01
 Authors:
-    - Muller Arthur
+    - Muller Arthur Istvan
         Matricola: 0001145303
     - Cattolico Giuseppe
         Matricola: 0001124318
