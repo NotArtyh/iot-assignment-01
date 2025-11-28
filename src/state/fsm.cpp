@@ -1,4 +1,5 @@
 #include "state/fsm.h"
+#include "avr/sleep.h"
 #include "button/button.h"
 #include "display/display.h"
 #include "game/game.h"
@@ -10,6 +11,7 @@
 #define MAX_TIME_ST_SLEEP 5000
 #define MAX_TIME_ST_SETUP 10000
 #define MAX_TIME_ST_LOSE 10000
+#define MAX_TIME_ST_LOSE_STATUS_ON 2000
 #define MAX_TIME_ST_WIN 5000
 #define MAX_TIME_ST_ROUND 30000
 #define ST_ROUND_STEP 1000
@@ -32,6 +34,9 @@ void fsm_transition_to(state_t state_new) {
     state_current = state_new;
     state_entry_time = millis();
     state_first_cycle = true;
+    button_reset();
+    green_led_off();
+    status_led_off();
 }
 
 void fsm_update_state_time() {
@@ -46,6 +51,7 @@ void fsm_update_difficulty() {
     difficulty = pot_get_factor();
 };
 
+// Debugging | gets the current ammount of ram available, used with serialprint
 int freeRam() {
     extern int __heap_start, *__brkval;
     int v;
@@ -58,14 +64,10 @@ FiniteStateMachine logic below
 ---------------------------------------------
 */
 
-void fsm_init() {
-    Serial.begin(9600);
-    Serial.println(freeRam());
-}
+void fsm_init() { Serial.begin(9600); }
 
 void handle_st_initial() {
     if (fsm_is_state_first_cycle()) {
-        green_led_off();
         display_print_P(MSG_INITIAL);
     }
 
@@ -82,31 +84,27 @@ void handle_st_initial() {
 
 void handle_st_sleep() {
     if (fsm_is_state_first_cycle()) {
-        button_reset();
-        status_led_off();
         display_print_P(MSG_SLEEP);
     }
-    green_led_blink_sequence();
 
-    if (button_is_pressed(0)) {
-        fsm_transition_to(ST_INITIAL);
-    }
+    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+    sleep_enable();
+    sleep_mode();
+    sleep_disable();
+
+    fsm_transition_to(ST_INITIAL);
 }
 
 void handle_st_setup() {
     if (fsm_is_state_first_cycle()) {
         game_reset();
-        green_led_off();
-        status_led_off();
         fsm_reset_round_time();
         display_print_P(MSG_SETUP);
     }
-
-    // move to a proper place + mehtod
+    
     fsm_update_difficulty();
     green_led_off();
     green_led_on_index(difficulty - 1);
-    // Serial.println(difficulty);
 
     if (state_elapsed_time > MAX_TIME_ST_SETUP) {
         fsm_transition_to(ST_ROUND);
@@ -115,14 +113,11 @@ void handle_st_setup() {
 
 void handle_st_round() {
     if (fsm_is_state_first_cycle()) {
-        green_led_off();
-        button_reset();
         game_shuffle_sequence();
         display_print(game_get_sequence_string());
-        Serial.println(time_st_round);
+        Serial.println(time_st_round); // debugging
     }
 
-    // move to a proper place + mehtod
     for (size_t i = 0; i < 4; i++) {
         if (button_is_pressed(i)) {
             green_led_on_index(i);
@@ -141,13 +136,11 @@ void handle_st_round() {
 
 void handle_st_lose() {
     if (fsm_is_state_first_cycle()) {
-        green_led_off();
+        status_led_on();
         display_print_P(MSG_LOSE, game_get_score());
     }
 
-    if (state_elapsed_time < 2000) {
-        status_led_on();
-    } else {
+    if (state_elapsed_time > MAX_TIME_ST_LOSE_STATUS_ON) {
         status_led_off();
     }
 
@@ -158,7 +151,6 @@ void handle_st_lose() {
 
 void handle_st_win() {
     if (fsm_is_state_first_cycle()) {
-        green_led_off();
         game_update_score();
         display_print_P(MSG_WIN, game_get_score());
         fsm_update_round_time();
