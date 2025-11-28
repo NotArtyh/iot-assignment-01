@@ -31,7 +31,6 @@ void game_shuffle_sequence() {
     }
 }
 
-// give proper naming and implement
 void game_reset() {
     user_sequence_index = 0;
     game_score = 0;
