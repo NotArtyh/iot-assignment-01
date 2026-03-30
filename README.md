@@ -1,33 +1,132 @@
-# Assignment #01 - Turn on the Sequence! (TOS) - IoT Embedded Systems Year: 2025/2026
+# 🎮 Turn on the Sequence! (TOS)
 
-## Authors
-- Muller Arthur Istvan \
-    Matricola: 0001145303 
-  
-- Cattolico Giuseppe \
-    Matricola: 0001124318
-        
+> A memory-based reaction game built on Arduino — race against the clock to light up the correct LED sequence before time runs out.
+
 ![circuit-diagram](./circuit-diagram.png)
 
-## Setup and Build
+---
 
-The project has been tested and has native support for the following `i2c` displays:
+## What is TOS?
 
-- LCD - `1602 lcd`
-- OLED - `sh1106 oled`
+**Turn on the Sequence!** is an embedded game running on an Arduino microcontroller. The game displays a random 4-digit sequence on an LCD/OLED screen, and the player must press the corresponding buttons to light up the LEDs in that exact order — before time expires.
 
-Any display using the i2c protocol and supported by the `LiquidCrystal_I2C.h` library for LCDs or the `U8g2lib.h` for the OLEDs (virtually any oled display with any protocol is supported with this library) should work with minimal editing of the respective display module.
+Each successful round increases your score and *reduces the time limit*, making the game progressively harder. One wrong press or a timeout ends the game.
 
-To switch between the OLED and LCD configuration, set the `-D USE_OLED` build flag in the `platformio.ini` (or configure a platformio env with the corresonding flag)
+### Hardware components
+- 4 green LEDs (L1–L4) + 1 red LED (LS)
+- 4 tactile buttons (B1–B4)
+- 1 potentiometer (difficulty selector)
+- LCD 1602 or SH1106 OLED display (I²C)
+
+---
+
+## Gameplay
+
+1. **Idle state** — the red LED pulses while waiting. Press **B1** to start. If no input is received within 10 seconds, the system enters deep sleep (wake with B1).
+2. **Round start** — a random 4-digit sequence (digits 1–4, all distinct) appears on the display.
+3. **Player input** — press the buttons in the displayed order. Each correct press lights up the corresponding LED.
+4. **Success** → score increases, time limit shrinks, next round begins.
+5. **Failure** (wrong button or timeout) → red LED turns on for 2 seconds, final score is displayed, then the game resets.
+
+**Adjust difficulty** with the potentiometer before starting — it controls how aggressively the time limit decreases each round (levels 1–4).
+
+---
 
 ## Project Architecture
 
-The project has been developed with a modular and flexible system in mind. Every hardware component and system function has been separated in its respective module to ensure separation of scope and purpose. Each component hides its internal implementation, only exposing abstract methods via its
-correpsonding header, ensuring safety and proper separation, while also alowing for a modular programming style to be followed. All of this has been done while still using the C paradime, creating language wrappers around the arduino and library methods that use a C++ syntax.
+The project is built with a **modular, procedural design** in C++, running on a **super-loop** control architecture.
 
-The fsm acts as the core for the whole project with a _super loop_ -type implementation, handling the routing and implementation of states that define the game. Each state simply calls the exposed
-methods that handle the needed component function without having to implement anything internally.
-The game module implements the game logic, handling the tracking of the user sequence, score and
-win/lose validations; the fsm is still responsible for timings and managing the game difficulty.
+```
+.
+├── include/
+│   ├── config.h                  # Global configuration (pins, timings, difficulty)
+│   ├── io.h                      # I/O abstraction
+│   ├── input.h                   # Input handling interface
+│   ├── button/
+│   │   └── button.h
+│   ├── display/
+│   │   ├── display.h             # Display abstraction layer
+│   │   ├── lcd_display.h
+│   │   └── oled_display.h
+│   ├── game/
+│   │   └── game.h                # Game logic interface
+│   ├── led/
+│   │   └── led.h
+│   ├── potentiometer/
+│   │   └── potentiometer.h
+│   └── state/
+│       └── fsm.h                 # Finite state machine interface
+├── src/
+│   ├── main.cpp                  # Entry point, super-loop
+│   ├── io.cpp
+│   ├── button/
+│   │   └── button.cpp
+│   ├── display/
+│   │   ├── display.cpp
+│   │   ├── lcd_display.cpp
+│   │   └── oled_display.cpp
+│   ├── game/
+│   │   └── game.cpp
+│   ├── led/
+│   │   └── led.cpp
+│   ├── potentiometer/
+│   │   └── potentiometer.cpp
+│   └── state/
+│       └── fsm.cpp               # FSM implementation
+├── platformio.ini
+└── circuit-diagram.png
+```
 
-During development different libraries had to be tested for handling the OLED display. This was made necessary by the heavy use of the internal SRAM for the display buffer, which showed to be a changellenge for the 2kb available to the arduino uno. The `U8g2lib.h` has been chosen as a popular alternative to the initially used `Adafruit_SH1106.h`, which ended up being too cumbersome and wasteful for the available memory. The library supports a wide range of displays, while also providing a useful `u8x8` character only mode, which doesn't require a display buffer to be kept in ram. This then escalated in an attempt to optimize the code, and its memory usage, as much as reasonably possible. (A lot of improvements could still be had, while it is known to us where and which parts would need improvements, the underlying super loop style implementation is prone to more memory usage than a event driven one, but still, it could be improved further).
+Each hardware component lives in its own module under `src/` and `include/`, exposing only abstract methods through its header. The FSM in `state/fsm.cpp` acts as the central coordinator — handling state transitions, timing, and difficulty management — while delegating all hardware interaction to the individual modules. No object-oriented patterns are used; the architecture relies entirely on clean module boundaries and C-style encapsulation.
+
+---
+
+## Display Support
+
+The project supports two I²C display types out of the box:
+
+| Display | Driver | Library |
+|---|---|---|
+| LCD 1602 | `lcd_display` | `LiquidCrystal_I2C.h` |
+| SH1106 OLED | `oled_display` | `U8g2lib.h` (character mode, no RAM buffer) |
+
+Any display compatible with these libraries should work with minimal changes to the respective display module.
+
+**To switch between LCD and OLED**, set the build flag in `platformio.ini`:
+
+```ini
+build_flags = -D USE_OLED
+```
+
+Or configure a dedicated PlatformIO environment per display type.
+
+### A note on memory
+
+The Arduino Uno has only **2 KB of SRAM**. The OLED display in particular was a challenge — the `Adafruit_SH1106` library kept a full frame buffer in RAM, which proved too costly. `U8g2lib` in `u8x8` character-only mode was chosen as a replacement: same display support, zero frame buffer overhead. The rest of the codebase was optimized accordingly to stay within the available memory budget.
+
+---
+
+## Build & Flash
+
+This project uses **PlatformIO**.
+
+```bash
+# Clone the repo
+git clone https://github.com/NotArtyh/iot-assignment-01
+cd iot-assignment-01
+
+# Build
+pio run
+
+# Upload
+pio run --target upload
+```
+
+Make sure your `platformio.ini` targets the correct board and serial port.
+
+---
+
+## Authors
+
+- **Arthur Istvan Muller**
+- **Giuseppe Cattolico**
